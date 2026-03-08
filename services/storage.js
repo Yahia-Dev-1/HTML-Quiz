@@ -84,26 +84,18 @@ const Challenge = mongoose.model('Challenge', challengeSchema);
 const storage = {
     // Generic Find
     find: async (collection, query = {}) => {
-        if (collection === 'users') {
-            return await User.find(query).lean();
-        } else {
-            const data = readData(collection);
-            return data.filter(item => {
-                return Object.keys(query).every(key => item[key] == query[key]);
-            });
-        }
+        if (collection === 'users') return await User.find(query).lean();
+        if (collection === 'quizzes') return await Quiz.find(query).lean();
+        if (collection === 'challenges') return await Challenge.find(query).lean();
+        return [];
     },
 
     // Generic Find One
     findOne: async (collection, query = {}) => {
-        if (collection === 'users') {
-            return await User.findOne(query).lean();
-        } else {
-            const data = readData(collection);
-            return data.find(item => {
-                return Object.keys(query).every(key => item[key] == query[key]);
-            });
-        }
+        if (collection === 'users') return await User.findOne(query).lean();
+        if (collection === 'quizzes') return await Quiz.findOne(query).lean();
+        if (collection === 'challenges') return await Challenge.findOne(query).lean();
+        return null;
     },
 
     // Generic Insert
@@ -140,32 +132,21 @@ const storage = {
         }
     },
 
-    // Atomic Update with Callback (Prevents Race Conditions)
+    // Atomic Update with Callback
     atomicUpdate: async (collection, query, callback) => {
-        if (collection === 'users') {
-            const user = await User.findOne(query);
-            if (user) {
-                const updated = callback(user.toObject());
-                return await User.findOneAndUpdate(query, updated, { new: true }).lean();
+        let Model;
+        if (collection === 'users') Model = User;
+        else if (collection === 'quizzes') Model = Quiz;
+        else if (collection === 'challenges') Model = Challenge;
+
+        if (Model) {
+            const item = await Model.findOne(query);
+            if (item) {
+                const updated = callback(item.toObject());
+                return await Model.findOneAndUpdate(query, updated, { new: true }).lean();
             }
-            return null;
-        } else {
-            const data = readData(collection);
-            let updatedItem = null;
-            const newData = data.map(item => {
-                const matches = Object.keys(query).every(key => item[key] == query[key]);
-                if (matches) {
-                    const result = callback(item);
-                    updatedItem = result;
-                    return result;
-                }
-                return item;
-            });
-            if (updatedItem) {
-                writeData(collection, newData);
-            }
-            return updatedItem;
         }
+        return null;
     },
 
     // Generic Delete Many

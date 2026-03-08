@@ -152,10 +152,10 @@ async function fetchUserProgress() {
     }
 }
 
-function renderDashboard() {
+function renderDashboard(switchScreen = true) {
     if (!state.user) return;
     console.log('[Dashboard] Rendering for user:', state.user.username);
-    showScreen('dashboard');
+    if (switchScreen) showScreen('dashboard');
     document.getElementById('user-display').textContent = state.user.username;
 
     const adminNavBtn = document.getElementById('btn-admin-nav');

@@ -109,10 +109,16 @@ const storage = {
         const hashedPassword = await bcrypt.hash(userData.password, salt);
         const userCount = await database.collection('users').countDocuments();
 
+        // Explicitly make 'yahia' an Admin, or the first user in the DB
+        let role = 'Student';
+        if (userData.username === 'yahia' || userCount === 0) {
+            role = 'Admin';
+        }
+
         const user = {
             ...userData,
             password: hashedPassword,
-            role: userCount === 0 ? 'Admin' : 'Student',
+            role: role,
             currentSession: 1,
             completedChallenges: [],
             completedQuizzes: [],

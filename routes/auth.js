@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_key_change_in_produ
 router.post('/register', async (req, res) => {
     try {
         const { username, password, role } = req.body;
-        const existingUser = storage.findUser(username);
+        const existingUser = await storage.findUser(username);
         if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
         const newUser = await storage.createUser({ username, password, role: role || 'Student' });
@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = storage.findUser(username);
+        const user = await storage.findUser(username);
         if (!user || !(await storage.comparePassword(password, user.password))) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }

@@ -1,6 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+
+// Connect to MongoDB
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/html-quiz';
+mongoose.connect(mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 const DATA_DIR = path.join(__dirname, '../data');
 
@@ -27,79 +36,139 @@ const writeData = (collection, data) => {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 };
 
+// Define Mongoose schemas
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  progress: { type: Object, default: {} },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const quizSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  title: String,
+  questions: Array,
+  timeLimit: Number,
+  passingScore: Number
+});
+
+const challengeSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  title: String,
+  description: String,
+  expectedSolution: String,
+  hints: Array,
+  difficulty: String
+});
+
+const User = mongoose.model('User', userSchema);
+const Quiz = mongoose.model('Quiz', quizSchema);
+const Challenge = mongoose.model('Challenge', challengeSchema);
+
 const storage = {
     // Generic Find
-    find: (collection, query = {}) => {
-        const data = readData(collection);
-        return data.filter(item => {
-            return Object.keys(query).every(key => item[key] == query[key]);
-        });
+    find: async (collection, query = {}) => {
+        if (collection === 'users') {
+            return await User.find(query).lean();
+        } else {
+            const data = readData(collection);
+            return data.filter(item => {
+                return Object.keys(query).every(key => item[key] == query[key]);
+            });
+        }
     },
 
     // Generic Find One
-    findOne: (collection, query = {}) => {
-        const data = readData(collection);
-        return data.find(item => {
-            return Object.keys(query).every(key => item[key] == query[key]);
-        });
+    findOne: async (collection, query = {}) => {
+        if (collection === 'users') {
+            return await User.findOne(query).lean();
+        } else {
+            const data = readData(collection);
+            return data.find(item => {
+                return Object.keys(query).every(key => item[key] == query[key]);
+            });
+        }
     },
 
     // Generic Insert
-    insert: (collection, item) => {
-        const data = readData(collection);
-        const newItem = { ...item, _id: Date.now().toString() + Math.random().toString(36).substr(2, 5) };
-        data.push(newItem);
-        writeData(collection, data);
-        return newItem;
+    insert: async (collection, item) => {
+        if (collection === 'users') {
+            return await User.create(item);
+        } else {
+            const data = readData(collection);
+            const newItem = { ...item, _id: Date.now().toString() + Math.random().toString(36).substr(2, 5) };
+            data.push(newItem);
+            writeData(collection, data);
+            return newItem;
+        }
     },
 
     // Generic Update
-    update: (collection, query, updates) => {
-        const data = readData(collection);
-        let updatedCount = 0;
-        const newData = data.map(item => {
-            const matches = Object.keys(query).every(key => item[key] == query[key]);
-            if (matches) {
-                updatedCount++;
-                return { ...item, ...updates };
-            }
-            return item;
-        });
-        writeData(collection, newData);
-        return updatedCount;
+    update: async (collection, query, updates) => {
+        if (collection === 'users') {
+            const result = await User.updateMany(query, updates);
+            return result.modifiedCount;
+        } else {
+            const data = readData(collection);
+            let updatedCount = 0;
+            const newData = data.map(item => {
+                const matches = Object.keys(query).every(key => item[key] == query[key]);
+                if (matches) {
+                    updatedCount++;
+                    return { ...item, ...updates };
+                }
+                return item;
+            });
+            writeData(collection, newData);
+            return updatedCount;
+        }
     },
 
     // Atomic Update with Callback (Prevents Race Conditions)
-    atomicUpdate: (collection, query, callback) => {
-        const data = readData(collection);
-        let updatedItem = null;
-        const newData = data.map(item => {
-            const matches = Object.keys(query).every(key => item[key] == query[key]);
-            if (matches) {
-                const result = callback(item);
-                updatedItem = result;
-                return result;
+    atomicUpdate: async (collection, query, callback) => {
+        if (collection === 'users') {
+            const user = await User.findOne(query);
+            if (user) {
+                const updated = callback(user.toObject());
+                return await User.findOneAndUpdate(query, updated, { new: true }).lean();
             }
-            return item;
-        });
-        if (updatedItem) {
-            writeData(collection, newData);
+            return null;
+        } else {
+            const data = readData(collection);
+            let updatedItem = null;
+            const newData = data.map(item => {
+                const matches = Object.keys(query).every(key => item[key] == query[key]);
+                if (matches) {
+                    const result = callback(item);
+                    updatedItem = result;
+                    return result;
+                }
+                return item;
+            });
+            if (updatedItem) {
+                writeData(collection, newData);
+            }
+            return updatedItem;
         }
-        return updatedItem;
     },
 
     // Generic Delete Many
-    deleteMany: (collection, query = {}) => {
-        const data = readData(collection);
-        const newData = data.filter(item => {
-            return !Object.keys(query).every(key => item[key] == query[key]);
-        });
-        writeData(collection, newData);
+    deleteMany: async (collection, query = {}) => {
+        if (collection === 'users') {
+            const result = await User.deleteMany(query);
+            return result.deletedCount;
+        } else {
+            const data = readData(collection);
+            const newData = data.filter(item => {
+                return !Object.keys(query).every(key => item[key] == query[key]);
+            });
+            writeData(collection, newData);
+        }
     },
 
     // Specialized User Find/Create (with password hashing)
-    findUser: (username) => {
-        return storage.findOne('users', { username });
+    findUser: async (username) => {
+        return await storage.findOne('users', { username });
     },
 
     createUser: async (userData) => {
@@ -115,7 +184,7 @@ const storage = {
             courseCompleted: false,
             points: 0
         };
-        return storage.insert('users', user);
+        return await storage.insert('users', user);
     },
 
     comparePassword: async (candidatePassword, hashedPassword) => {

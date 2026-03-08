@@ -1,0 +1,43 @@
+[
+  {
+    "username": "yahia",
+    "password": "$2b$10$PHNTzGJ66ltQJiKzFRdtaekI.hXjzc8Rbu1fCLJpTqB.wOw0RT4iq",
+    "role": "Admin",
+    "currentSession": 1,
+    "completedChallenges": [],
+    "completedQuizzes": [],
+    "quizScores": {},
+    "points": 0,
+    "_id": "admin_yahia"
+  },
+  {
+    "username": "dev",
+    "password": "$2b$10$e0Ei1KTtYot3gJ7Iewg/0uKtPEczcTH1OSZuPxze8sQpj4aNPoQDi",
+    "role": "Student",
+    "currentSession": 4,
+    "completedChallenges": [
+      "c1",
+      "s1c2",
+      "s2c1",
+      "s2c4",
+      "s2c2",
+      "s2c3",
+      "s3c1",
+      "s3c2",
+      "s3c3",
+      "s3c4"
+    ],
+    "completedQuizzes": [
+      "q_s1",
+      "q_s2",
+      "q_s3"
+    ],
+    "quizScores": {
+      "q_s1": 80,
+      "q_s2": 70,
+      "q_s3": 80
+    },
+    "points": 215,
+    "_id": "1772933414382fhh2i"
+  }
+]

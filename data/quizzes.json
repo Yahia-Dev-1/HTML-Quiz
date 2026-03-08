@@ -1,0 +1,522 @@
+[
+    {
+        "question": "ما معنى HTML؟",
+        "choices": [
+            "لغة تصميم صفحات",
+            "لغة ترميز النص التشعبي",
+            "لغة برمجة قواعد البيانات",
+            "لغة تشغيل المواقع"
+        ],
+        "correctAnswer": "لغة ترميز النص التشعبي",
+        "explanation": "HTML تدل على HyperText Markup Language أي لغة ترميز النص التشعبي.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "أي وسم يستخدم لإنشاء أكبر عنوان في الصفحة؟",
+        "choices": [
+            "<h6>",
+            "<title>",
+            "<h1>",
+            "<head>"
+        ],
+        "correctAnswer": "<h1>",
+        "explanation": "<h1> هو أكبر مستوى للعناوين، بينما <h6> هو الأصغر.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "أي وسم يستخدم لكتابة فقرة؟",
+        "choices": [
+            "<p>",
+            "<text>",
+            "<t>",
+            "<paragraph>"
+        ],
+        "correctAnswer": "<p>",
+        "explanation": "يستخدم الوسم <p> لتمثيل الفقرات النصية.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "أي وسم يمثل بداية صفحة HTML؟",
+        "choices": [
+            "<body>",
+            "<html>",
+            "<main>",
+            "<section>"
+        ],
+        "correctAnswer": "<html>",
+        "explanation": "عنصر <html> هو الحاوية الأساسية لكل محتويات صفحة الويب.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "أين يتم وضع عنوان الصفحة الذي يظهر في المتصفح؟",
+        "choices": [
+            "<body>",
+            "<footer>",
+            "<head>",
+            "<main>"
+        ],
+        "correctAnswer": "<head>",
+        "explanation": "يتم وضع وسم <title> داخل قسم <head>.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "أي جزء يحتوي على المحتوى الذي يراه المستخدم؟",
+        "choices": [
+            "<body>",
+            "<head>",
+            "<meta>",
+            "<title>"
+        ],
+        "correctAnswer": "<body>",
+        "explanation": "كل ما يظهر للمستخدم في المتصفح يوضع داخل وسم <body>.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "كم عدد مستويات العناوين في HTML؟",
+        "choices": [
+            "3",
+            "4",
+            "6",
+            "8"
+        ],
+        "correctAnswer": "6",
+        "explanation": "يوجد 6 مستويات للعناوين من h1 إلى h6.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "أي وسم يستخدم لوضع عنوان الصفحة في التبويب؟",
+        "choices": [
+            "<title>",
+            "<header>",
+            "<h1>",
+            "<meta>"
+        ],
+        "correctAnswer": "<title>",
+        "explanation": "وسم <title> هو المسؤول عن النص الظاهر في تبويب المتصفح.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "ما وظيفة <head> في HTML؟",
+        "choices": [
+            "عرض الصور",
+            "عرض النصوص",
+            "يحتوي معلومات الصفحة",
+            "إنشاء روابط"
+        ],
+        "correctAnswer": "يحتوي معلومات الصفحة",
+        "explanation": "قسم <head> يحتوي على البيانات الوصفية (Metadata) والروابط الخارجية وليس المحتوى المرئي.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "أي من التالي يعتبر عنصر HTML صحيح؟",
+        "choices": [
+            "<heading>",
+            "<paragraph>",
+            "<p>",
+            "<text>"
+        ],
+        "correctAnswer": "<p>",
+        "explanation": "<p> هو الوسم القياسي للفقرات في HTML.",
+        "category": "أساسيات HTML",
+        "sessionNumber": 1
+    },
+    {
+        "question": "أي وسم يستخدم لإنشاء رابط؟",
+        "choices": [
+            "<link>",
+            "<a>",
+            "<url>",
+            "<href>"
+        ],
+        "correctAnswer": "<a>",
+        "explanation": "الوسم <a> (Anchor) يستخدم لإنشاء الروابط التشعبية.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "أي خاصية تحدد رابط الصفحة؟",
+        "choices": [
+            "src",
+            "href",
+            "link",
+            "target"
+        ],
+        "correctAnswer": "href",
+        "explanation": "href هي اختصار لـ Hypertext Reference وتحدد وجهة الرابط.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "أي وسم يستخدم لإضافة صورة؟",
+        "choices": [
+            "<picture>",
+            "<img>",
+            "<photo>",
+            "<image>"
+        ],
+        "correctAnswer": "<img>",
+        "explanation": "يستخدم وسم <img> لإدراج الصور في الصفحة.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "أي خاصية تحدد مسار الصورة؟",
+        "choices": [
+            "href",
+            "src",
+            "link",
+            "path"
+        ],
+        "correctAnswer": "src",
+        "explanation": "src هي اختصار لـ Source وتستخدم لتحديد موقع ملف الصورة.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "ما وظيفة alt في الصور؟",
+        "choices": [
+            "تغيير حجم الصورة",
+            "نص بديل للصورة",
+            "تغيير اللون",
+            "تحريك الصورة"
+        ],
+        "correctAnswer": "نص بديل للصورة",
+        "explanation": "تستخدم alt لوصف الصورة إذا لم تظهر ولمساعدة قارئات الشاشة.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "كيف تجعل الرابط يفتح في تبويب جديد؟",
+        "choices": [
+            "target=\"_blank\"",
+            "open=\"new\"",
+            "href=\"_blank\"",
+            "tab=\"new\""
+        ],
+        "correctAnswer": "target=\"_blank\"",
+        "explanation": "الخاصية target=\"_blank\" تفتح الرابط في نافذة أو تبويب جديد.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "أي خاصية تستخدم لتحديد عرض الصورة؟",
+        "choices": [
+            "width",
+            "size",
+            "length",
+            "img-width"
+        ],
+        "correctAnswer": "width",
+        "explanation": "تستخدم صفة width لتحديد عرض العنصر بالبكسل أو النسبة المئوية.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "أي خاصية تستخدم لتحديد ارتفاع الصورة؟",
+        "choices": [
+            "height",
+            "size",
+            "length",
+            "img-height"
+        ],
+        "correctAnswer": "height",
+        "explanation": "تستخدم صفة height لتحديد الارتفاع الرأسي للصورة.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "هل وسم <img> يحتاج إلى closing tag؟",
+        "choices": [
+            "نعم",
+            "لا",
+            "أحيانًا",
+            "فقط في CSS"
+        ],
+        "correctAnswer": "لا",
+        "explanation": "وسم <img> هو عنصر فارغ (void element) لا يحتاج لغلق.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "أي عنصر يمكن استخدامه لتحويل صورة إلى رابط؟",
+        "choices": [
+            "<link>",
+            "<a>",
+            "<img-link>",
+            "<connect>"
+        ],
+        "correctAnswer": "<a>",
+        "explanation": "يمكن وضع وسم <img> داخل وسم <a> لجعل الصورة قابلة للضغط كـرابط.",
+        "category": "الروابط والصور",
+        "sessionNumber": 2
+    },
+    {
+        "question": "أي وسم يستخدم لإنشاء جدول؟",
+        "choices": [
+            "<grid>",
+            "<table>",
+            "<data>",
+            "<tab>"
+        ],
+        "correctAnswer": "<table>",
+        "explanation": "وسم <table> هو العنصر الأساسي لتعريف الجداول.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "أي وسم يمثل صف في الجدول؟",
+        "choices": [
+            "<row>",
+            "<tr>",
+            "<td>",
+            "<line>"
+        ],
+        "correctAnswer": "<tr>",
+        "explanation": "tr تدل على Table Row أي صف الجدول.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "أي وسم يمثل خلية داخل الجدول؟",
+        "choices": [
+            "<cell>",
+            "<td>",
+            "<data>",
+            "<col>"
+        ],
+        "correctAnswer": "<td>",
+        "explanation": "td تدل على Table Data وتمثل الخلية العادية في الجدول.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "أي وسم يستخدم لإنشاء قائمة غير مرتبة؟",
+        "choices": [
+            "<ol>",
+            "<ul>",
+            "<li>",
+            "<list>"
+        ],
+        "correctAnswer": "<ul>",
+        "explanation": "ul تدل على Unordered List وهي القائمة النقطية.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "أي وسم يمثل عنصر داخل القائمة؟",
+        "choices": [
+            "<item>",
+            "<li>",
+            "<list>",
+            "<ul>"
+        ],
+        "correctAnswer": "<li>",
+        "explanation": "li تدل على List Item وهو عنصر القائمة.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "أي وسم يستخدم لإنشاء قائمة مرتبة بالأرقام؟",
+        "choices": [
+            "<ul>",
+            "<ol>",
+            "<li>",
+            "<list>"
+        ],
+        "correctAnswer": "<ol>",
+        "explanation": "ol تدل على Ordered List وهي القائمة الرقمية.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "أي وسم يستخدم لعناوين الأعمدة في الجدول؟",
+        "choices": [
+            "<td>",
+            "<th>",
+            "<head>",
+            "<column>"
+        ],
+        "correctAnswer": "<th>",
+        "explanation": "th تدل على Table Header وتستخدم لتمييز العناوين بخط سميك.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "كم عنصر أساسي غالبًا يستخدم لبناء الجدول؟",
+        "choices": [
+            "2",
+            "3",
+            "4",
+            "5"
+        ],
+        "correctAnswer": "3",
+        "explanation": "العناصر الأساسية هي table و tr و td.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "أي وسم يحتوي عناصر القائمة؟",
+        "choices": [
+            "<ul> أو <ol>",
+            "<li> فقط",
+            "<table>",
+            "<row>"
+        ],
+        "correctAnswer": "<ul> أو <ol>",
+        "explanation": "يجب وضع عناصر li داخل وسم ul أو ol.",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "هل يمكن وضع قائمة داخل عنصر <li>؟",
+        "choices": [
+            "نعم",
+            "لا",
+            "فقط في CSS",
+            "فقط في JavaScript"
+        ],
+        "correctAnswer": "نعم",
+        "explanation": "نعم، هذا ما يسمى بالقوائم المتداخلة (Nested Lists).",
+        "category": "الجداول والقوائم",
+        "sessionNumber": 3
+    },
+    {
+        "question": "أي وسم يستخدم لإنشاء نموذج إدخال بيانات؟",
+        "choices": [
+            "<input>",
+            "<form>",
+            "<data>",
+            "<field>"
+        ],
+        "correctAnswer": "<form>",
+        "explanation": "وسم <form> هو الحاوية لجميع عناصر الإدخال.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي عنصر يستخدم لإدخال نص؟",
+        "choices": [
+            "<input>",
+            "<text>",
+            "<write>",
+            "<typing>"
+        ],
+        "correctAnswer": "<input>",
+        "explanation": "يستخدم <input> بأنواعه المختلفة لإدخال البيانات.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي خاصية تحدد نوع الإدخال؟",
+        "choices": [
+            "type",
+            "kind",
+            "input",
+            "style"
+        ],
+        "correctAnswer": "type",
+        "explanation": "خاصية type تحدد ما إذا كان الحقل نصياً، كلمة مرور، أو غير ذلك.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي نوع input يستخدم لكلمة المرور؟",
+        "choices": [
+            "type=\"text\"",
+            "type=\"password\"",
+            "type=\"login\"",
+            "type=\"secure\""
+        ],
+        "correctAnswer": "type=\"password\"",
+        "explanation": "النوع password يقوم بإخفاء الرموز المدخلة.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي نوع input يستخدم للبريد الإلكتروني؟",
+        "choices": [
+            "type=\"mail\"",
+            "type=\"email\"",
+            "type=\"text\"",
+            "type=\"contact\""
+        ],
+        "correctAnswer": "type=\"email\"",
+        "explanation": "النوع email يوفر تحققاً أساسياً من صحة البريد الإلكتروني.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي وسم يستخدم لزر الإرسال؟",
+        "choices": [
+            "<button>",
+            "<submit>",
+            "<send>",
+            "<click>"
+        ],
+        "correctAnswer": "<button>",
+        "explanation": "وسم <button> يستخدم لإنشاء أزرار داخل النماذج.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي وسم يمثل رأس الصفحة؟",
+        "choices": [
+            "<head>",
+            "<header>",
+            "<top>",
+            "<start>"
+        ],
+        "correctAnswer": "<header>",
+        "explanation": "وسم <header> دلالي يستخدم للمقدمة أو الرأس العلوي للصفحة أو القسم.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي وسم يستخدم للتنقل بين صفحات الموقع؟",
+        "choices": [
+            "<nav>",
+            "<menu>",
+            "<move>",
+            "<go>"
+        ],
+        "correctAnswer": "<nav>",
+        "explanation": "nav تدل على Navigation وتستخدم لاحتواء روابط التنقل الرئيسية.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي وسم يمثل محتوى مستقل داخل الصفحة؟",
+        "choices": [
+            "<section>",
+            "<data>",
+            "<text>",
+            "<mainbox>"
+        ],
+        "correctAnswer": "<section>",
+        "explanation": "يستخدم <section> لتقسيم الصفحة إلى أجزاء موضوعية.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    },
+    {
+        "question": "أي وسم يمثل نهاية الصفحة؟",
+        "choices": [
+            "<footer>",
+            "<bottom>",
+            "<end>",
+            "<close>"
+        ],
+        "correctAnswer": "<footer>",
+        "explanation": "وسم <footer> دلالي يستخدم للتذييل في أسفل الصفحة.",
+        "category": "النماذج والعناصر الدلالية",
+        "sessionNumber": 4
+    }
+]

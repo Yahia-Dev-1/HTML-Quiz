@@ -23,7 +23,7 @@ const adminAuth = (req, res, next) => {
 // Get All Students
 router.get('/students', adminAuth, async (req, res) => {
     try {
-        const users = storage.find('users', { role: 'Student' });
+        const users = await storage.find('users', { role: 'Student' });
         // Return students with progress data, excluding passwords
         const students = users.map(({ password, ...rest }) => rest);
         res.json(students);
@@ -36,7 +36,7 @@ router.get('/students', adminAuth, async (req, res) => {
 router.delete('/students/:id', adminAuth, async (req, res) => {
     try {
         const { id } = req.params;
-        storage.deleteMany('users', { _id: id });
+        await storage.deleteMany('users', { _id: id });
         res.json({ message: 'User deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: err.message });

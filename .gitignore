@@ -106,8 +106,5 @@ temp/
 *.sqlite
 *.sqlite3
 
-# Quiz data files (contain answers)
-data/*.json
-
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/

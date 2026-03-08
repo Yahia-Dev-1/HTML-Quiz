@@ -1,0 +1,146 @@
+[
+    {
+        "id": "s1c1",
+        "title": "التحدي 1: عنوان بسيط",
+        "description": "أنشئ صفحة HTML بسيطة تحتوي على عنصر <h1> بداخله نص 'Hello World' داخل body.",
+        "sessionNumber": 1,
+        "difficulty": "Easy",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><h1>Hello World</h1></body></html>",
+        "hint": "استخدم الهيكل الأساسي (زر 'الهيكل المتكامل') وغير نص h1 إلى 'Hello World'."
+    },
+    {
+        "id": "s1c2",
+        "title": "التحدي 2: الفقرات",
+        "description": "أنشئ صفحة تحتوي على عنصر <p> بداخله نص 'I am learning HTML' داخل body.",
+        "sessionNumber": 1,
+        "difficulty": "Easy",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><p>I am learning HTML</p></body></html>",
+        "hint": "استخدم الهيكل الأساسي واستبدل h1 بفقرة p تحتوي على 'I am learning HTML'."
+    },
+    {
+        "id": "s1c3",
+        "title": "التحدي 3: العناوين والفقرات",
+        "description": "أنشئ صفحة تحتوي على Heading باستخدام h1 و Paragraph باستخدام p. النصوص: 'My Website' و 'Welcome to my website'. رتب العناصر داخل body بشكل صحيح.",
+        "sessionNumber": 1,
+        "difficulty": "Medium",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><h1>My Website</h1><p>Welcome to my website</p></body></html>",
+        "hint": "أضف كلاً من h1 و p داخل body وغير نصوصهما."
+    },
+    {
+        "id": "s1c4",
+        "title": "التحدي 4: هيكل الصفحة الكامل",
+        "description": "أنشئ هيكل صفحة HTML كامل يحتوي على html, head, title, body. وبداخل الصفحة ضع عنوان h1 وفقرة p.",
+        "sessionNumber": 1,
+        "difficulty": "Hard",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><h1>مرحباً</h1><p>هذا موقعي</p></body></html>",
+        "hint": "تأكد من وجود قسم head و body وترتيب الوسوم بشكل صحيح."
+    },
+    {
+        "id": "s2c1",
+        "title": "التحدي 1: الروابط",
+        "description": "أنشئ Link باستخدام عنصر <a> يؤدي إلى الموقع https://google.com والنص الظاهر للرابط يكون 'Google'.",
+        "sessionNumber": 2,
+        "difficulty": "Easy",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><a href=\"https://google.com\">Google</a></body></html>",
+        "hint": "استخدم صفة href داخل وسم a للرابط."
+    },
+    {
+        "id": "s2c2",
+        "title": "التحدي 2: الصور",
+        "description": "أضف Image باستخدام <img> بمصدر 'photo.jpg' مع استخدام صفة src و alt.",
+        "sessionNumber": 2,
+        "difficulty": "Easy",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><img src=\"photo.jpg\" alt=\"photo\"/></body></html>",
+        "hint": "وسم img لا يحتاج لغلق، فقط ضع src و alt."
+    },
+    {
+        "id": "s2c3",
+        "title": "التحدي 3: العناوين والصور",
+        "description": "أنشئ صفحة تحتوي على Heading بعنوان 'My Photo' و Image باستخدام عنصر img.",
+        "sessionNumber": 2,
+        "difficulty": "Medium",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><h1>My Photo</h1><img src=\"photo.jpg\" alt=\"My Photo\"/></body></html>",
+        "hint": "ضع العنوان h1 والصورة img داخل body."
+    },
+    {
+        "id": "s2c4",
+        "title": "التحدي 4: صفحة متكاملة",
+        "description": "أنشئ صفحة تحتوي على عنوان h1 'My Blog' وفقرة p 'Visit my website' ورابط a 'Click Here'.",
+        "sessionNumber": 2,
+        "difficulty": "Hard",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><h1>My Blog</h1><p>Visit my website</p><a href=\"#\">Click Here</a></body></html>",
+        "hint": "رتب العناصر الثلاثة داخل body."
+    },
+    {
+        "id": "s3c1",
+        "title": "التحدي 1: القوائم غير المرتبة",
+        "description": "أنشئ Unordered List باستخدام ul تحتوي على 3 عناصر li: Apple, Banana, Mango.",
+        "sessionNumber": 3,
+        "difficulty": "Easy",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><ul><li>Apple</li><li>Banana</li><li>Mango</li></ul></body></html>",
+        "hint": "استخدم ul للقائمة و li للعناصر."
+    },
+    {
+        "id": "s3c2",
+        "title": "التحدي 2: القوائم المرتبة",
+        "description": "أنشئ Ordered List باستخدام ol تحتوي على 3 خطوات: Step 1, Step 2, Step 3.",
+        "sessionNumber": 3,
+        "difficulty": "Easy",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><ol><li>Step 1</li><li>Step 2</li><li>Step 3</li></ol></body></html>",
+        "hint": "استخدم وسم ol للقائمة المرتبة."
+    },
+    {
+        "id": "s3c3",
+        "title": "التحدي 3: الجداول",
+        "description": "أنشئ Table باستخدام table يحتوي على صف واحد tr وفيه خليتين td بنصوص 'Name' و 'Age'.",
+        "sessionNumber": 3,
+        "difficulty": "Medium",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><table><tr><td>Name</td><td>Age</td></tr></table></body></html>",
+        "hint": "استخدم table ثم tr ثم td."
+    },
+    {
+        "id": "s3c4",
+        "title": "التحدي 4: جدول بيانات",
+        "description": "أنشئ Table يحتوي على صفين tr، في كل صف خليتين td بمحتوى 'Ali – 20' و 'Omar – 22'.",
+        "sessionNumber": 3,
+        "difficulty": "Hard",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><table><tr><td>Ali</td><td>20</td></tr><tr><td>Omar</td><td>22</td></tr></table></body></html>",
+        "hint": "أضف صفين tr وبداخل كل منهما خليتين td."
+    },
+    {
+        "id": "s4c1",
+        "title": "التحدي 1: حقل الإدخال",
+        "description": "أضف Input field باستخدام input من نوع type='text' ليستخدم لكتابة الاسم.",
+        "sessionNumber": 4,
+        "difficulty": "Easy",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><input type=\"text\"/></body></html>",
+        "hint": "استخدم صفة type='text'."
+    },
+    {
+        "id": "s4c2",
+        "title": "التحدي 2: النماذج",
+        "description": "أنشئ Form باستخدام form داخلها input وزر button بنص 'Submit'.",
+        "sessionNumber": 4,
+        "difficulty": "Medium",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><form><input type=\"text\"/><button>Submit</button></form></body></html>",
+        "hint": "ضع المدخلات داخل وسم form."
+    },
+    {
+        "id": "s4c3",
+        "title": "التحدي 3: نموذج متكامل",
+        "description": "أنشئ Form يحتوي على حقل اسم (input)، حقل بريد إلكتروني (input type='email')، وزر إرسال (button).",
+        "sessionNumber": 4,
+        "difficulty": "Hard",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><form><input type=\"text\"/><input type=\"email\"/><button>Submit</button></form></body></html>",
+        "hint": "استخدم النوع email لبريد المستخدم."
+    },
+    {
+        "id": "s4c4",
+        "title": "التحدي 4: العناصر الدلالية",
+        "description": "أنشئ Layout بسيط باستخدام عناصر Semantic HTML التالية: header و main و footer. ضع نصاً بسيطاً داخل كل منها.",
+        "sessionNumber": 4,
+        "difficulty": "Hard",
+        "expectedSolution": "<!DOCTYPE html><html><head><title>عنوان الصفحة</title></head><body><header>Headline</header><main>Main Content</main><footer>Footer</footer></body></html>",
+        "hint": "استخدم الوسوم الدلالية لتقسيم الصفحة منطقياً."
+    }
+]

@@ -22,7 +22,7 @@ const auth = (req, res, next) => {
 // Get Progression
 router.get('/', auth, async (req, res) => {
     try {
-        const user = storage.findOne('users', { _id: req.user.id });
+        const user = await storage.findOne('users', { _id: req.user.id });
         if (!user) return res.status(404).json({ message: 'User not found' });
         const { password, ...userData } = user;
         res.json(userData);
@@ -37,7 +37,7 @@ router.post('/quiz', auth, async (req, res) => {
         const { sessionId, score, totalQuestions } = req.body;
         console.log(`[Quiz Route] Incoming: ${JSON.stringify(req.body)}`);
 
-        const updatedUser = storage.atomicUpdate('users', { _id: req.user.id }, (user) => {
+        const updatedUser = await storage.atomicUpdate('users', { _id: req.user.id }, (user) => {
             const quizId = `q_s${sessionId}`;
             if (!user.quizScores) user.quizScores = {};
 
@@ -68,7 +68,7 @@ router.post('/quiz', auth, async (req, res) => {
 router.post('/challenge', auth, async (req, res) => {
     try {
         const { challengeId } = req.body;
-        const updatedUser = storage.atomicUpdate('users', { _id: req.user.id }, (user) => {
+        const updatedUser = await storage.atomicUpdate('users', { _id: req.user.id }, (user) => {
             if (!user.completedChallenges) user.completedChallenges = [];
             if (!user.completedChallenges.includes(challengeId)) {
                 user.completedChallenges.push(challengeId);
@@ -89,7 +89,7 @@ router.post('/unlock-session', auth, async (req, res) => {
     try {
         const { quizScore: inputQuizScore } = req.body;
 
-        const result = storage.atomicUpdate('users', { _id: req.user.id }, (user) => {
+        const result = await storage.atomicUpdate('users', { _id: req.user.id }, (user) => {
             const currentSess = user.currentSession;
             if (currentSess >= 4) {
                 user.courseCompleted = true;
@@ -144,7 +144,7 @@ router.post('/unlock-session', auth, async (req, res) => {
 // Get Quiz Questions for a session
 router.get('/quiz-data/:sessionId', auth, async (req, res) => {
     try {
-        const questions = storage.find('quizzes', { sessionNumber: parseInt(req.params.sessionId) });
+        const questions = await storage.find('quizzes', { sessionNumber: parseInt(req.params.sessionId) });
         res.json(questions);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -154,7 +154,7 @@ router.get('/quiz-data/:sessionId', auth, async (req, res) => {
 // Get Challenge Data for a session
 router.get('/challenge-data/:sessionId', auth, async (req, res) => {
     try {
-        const challenges = storage.find('challenges', { sessionNumber: parseInt(req.params.sessionId) });
+        const challenges = await storage.find('challenges', { sessionNumber: parseInt(req.params.sessionId) });
         res.json(challenges); // Return all challenges for the session
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -165,7 +165,7 @@ router.get('/challenge-data/:sessionId', auth, async (req, res) => {
 router.post('/points', auth, async (req, res) => {
     try {
         const { points } = req.body;
-        const result = storage.atomicUpdate('users', { _id: req.user.id }, (user) => {
+        const result = await storage.atomicUpdate('users', { _id: req.user.id }, (user) => {
             user.points = points;
             return user;
         });

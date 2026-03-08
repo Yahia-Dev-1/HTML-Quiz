@@ -154,8 +154,14 @@ router.get('/quiz-data/:sessionId', auth, async (req, res) => {
 // Get Challenge Data for a session
 router.get('/challenge-data/:sessionId', auth, async (req, res) => {
     try {
-        const challenges = await storage.find('challenges', { sessionNumber: parseInt(req.params.sessionId) });
-        res.json(challenges); // Return all challenges for the session
+        const sessId = req.params.sessionId;
+        const challenges = await storage.find('challenges', {
+            $or: [
+                { sessionNumber: parseInt(sessId) },
+                { sessionNumber: sessId }
+            ]
+        });
+        res.json(challenges);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -136,6 +136,7 @@ async function fetchUserProgress() {
 function renderDashboard() {
     if (!state.user) return;
     console.log('[Dashboard] Rendering for user:', state.user.username);
+    showScreen('dashboard');
     document.getElementById('user-display').textContent = state.user.username;
 
     const adminNavBtn = document.getElementById('btn-admin-nav');

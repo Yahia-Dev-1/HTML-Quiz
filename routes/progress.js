@@ -23,7 +23,7 @@ const auth = (req, res, next) => {
 router.get('/', auth, async (req, res) => {
     try {
         const user = await storage.findOne('users', { _id: req.user.id });
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        if (!user) return res.status(401).json({ message: 'User not valid or session expired' });
         const { password, ...userData } = user;
         res.json(userData);
     } catch (err) {
@@ -97,7 +97,7 @@ router.post('/unlock-session', auth, async (req, res) => {
             }
 
             const quizId = `q_s${currentSess}`;
-            
+
             // تحديات الجلسة الأربعة: s1c1, s1c2, s1c3, s1c4 أو s2c1, s2c2, s2c3, s2c4 إلخ
             const allChallengeIds = [
                 `s${currentSess}c1`,

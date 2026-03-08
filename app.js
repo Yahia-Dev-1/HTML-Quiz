@@ -110,7 +110,9 @@ async function fetchUserProgress() {
             state.user = data;
             renderDashboard();
         } else {
+            console.error('[Auth] Progress fetch failed, clearing session.');
             localStorage.removeItem('token');
+            state.token = null;
             showScreen('auth');
         }
     } catch (err) {
@@ -150,7 +152,7 @@ function renderDashboard() {
     state.sessions.forEach(session => {
         const isUnlocked = session.id <= state.user.currentSession;
         const quizId = `q_s${session.id}`;
-        
+
         // تحديات الجلسة الأربعة: s1c1, s1c2, s1c3, s1c4 إلخ
         const allChallengeIds = [
             `s${session.id}c1`,
@@ -159,13 +161,13 @@ function renderDashboard() {
             `s${session.id}c4`
         ];
 
-        const isCompleted = state.user.completedQuizzes.includes(quizId);
+        const isCompleted = (state.user.completedQuizzes || []).includes(quizId);
         const quizScore = state.user.quizScores ? state.user.quizScores[quizId] : null;
-        
+
         // تحقق من أن جميع التحديات الأربعة مكتملة
         const completedChallenges = state.user.completedChallenges || [];
         const challengeDone = allChallengeIds.every(id => completedChallenges.includes(id));
-        
+
         // حساب عدد التحديات المكتملة من 4
         const completeCount = allChallengeIds.filter(id => completedChallenges.includes(id)).length;
         const challengeProgressText = `${completeCount}/4`;
@@ -306,11 +308,11 @@ function selectOption(choice, btn) {
 
 function autoConfirm() {
     const q = quizState.questions[quizState.currentIndex];
-    
+
     if (!quizState.selectedChoice) {
         // الوقت انتهى بدون اختيار - أظهر الإجابة الصحيحة مباشرة (0 نقاط)
         console.log(`⏱️ [AUTO] انتهى الوقت! الإجابة الصحيحة: ${q.correctAnswer}`);
-        
+
         // سجل الإجابة الخاطئة (لم يختر شيء)
         quizState.userAnswers[quizState.currentIndex] = {
             question: q.question,
@@ -419,7 +421,7 @@ async function showResults() {
     // تحديث واجهة النتائج
     document.querySelector('.trophy-icon').textContent = isPassed ? '🏆' : '💪';
     document.querySelector('.results-title').textContent = isPassed ? 'شكراً على المحاولة!' : 'حاول مرة أخرى';
-    
+
     // رسالة مفصلة عن الدرجة
     let resultMessage = `درجتك النهائية: <strong>${quizState.score}/${quizState.questions.length}</strong> (${scorePct}%)`;
     if (isPassed) {
@@ -427,7 +429,7 @@ async function showResults() {
     } else {
         resultMessage += ` ❌ - تحتاج إلى ${passThreshold}% على الأقل للاجتياز.`;
     }
-    
+
     document.querySelector('.results-sub').innerHTML = resultMessage;
 
     // عرض الإحصائيات
@@ -805,11 +807,11 @@ document.getElementById('btn-check-solution').onclick = async () => {
 
     const studentRaw = state.builderCode.join('');
     const expectedSolution = state.currentChallenge.expectedSolution;
-    
+
     // تنظيف كلا الكودين بنفس الطريقة
     const studentCleaned = cleanCode(studentRaw);
     const expectedCleaned = cleanCode(expectedSolution);
-    
+
     console.log('=== تحليل التحدي ===');
     console.log('التحدي:', state.currentChallenge.title);
     console.log('الكود المدخل (الخام):', studentRaw.substring(0, 150));
@@ -819,7 +821,7 @@ document.getElementById('btn-check-solution').onclick = async () => {
     console.log('طول الكود المدخل:', studentCleaned.length);
     console.log('طول الكود المتوقع:', expectedCleaned.length);
     console.log('هل يتطابقان؟', studentCleaned === expectedCleaned);
-    
+
     // المقارنة
     let isSuccess = studentCleaned === expectedCleaned;
 
@@ -840,7 +842,7 @@ document.getElementById('btn-check-solution').onclick = async () => {
         try {
             console.log('[CHALLENGE] جاري إرسال التحدي المكتمل...');
             console.log('[CHALLENGE] Challenge ID:', state.currentChallenge.id);
-            
+
             // إرسال التحدي المكتمل للخادم (استخدم الـ ID الكامل من challenges.json)
             const res = await fetch(`${API_URL}/progress/challenge`, {
                 method: 'POST',
@@ -877,7 +879,7 @@ document.getElementById('btn-check-solution').onclick = async () => {
                 console.log('[SYNC] جاري تحديث البيانات...');
                 await fetchUserProgress();
                 console.log('[SYNC] تم تحديث البيانات');
-                
+
                 // رسالة نجاح إضافية
                 setTimeout(() => {
                     showFeedback('🎉 تم الانتقال للتحدي التالي! اضغط السهم للخروج', 'success');
@@ -918,11 +920,11 @@ async function initAdminDashboard() {
     students.forEach((s, idx) => {
         const row = document.createElement('tr');
         const progressPct = Math.round((s.currentSession / 4) * 100);
-        
+
         // حساب النقاط من الإنجاز
         let earnedPoints = 0;
         let spentPoints = 0;
-        
+
         // كل اختبار نجح = 50 نقطة
         if (s.quizScores) {
             Object.values(s.quizScores).forEach(score => {
@@ -932,17 +934,17 @@ async function initAdminDashboard() {
                 }
             });
         }
-        
+
         // كل تحدي = 20 نقطة
         if (s.completedChallenges) {
             earnedPoints += (s.completedChallenges.length * 20);
             totalChallenges += s.completedChallenges.length;
         }
-        
+
         // النقاط الحالية (ما تبقى بعد الصرف)
         const currentPoints = s.points || 0;
         spentPoints = earnedPoints - currentPoints;
-        
+
         totalPoints += earnedPoints;
 
         row.innerHTML = `
@@ -980,7 +982,7 @@ async function initAdminDashboard() {
     // تحديث الإحصائيات
     document.getElementById('total-students').textContent = students.length;
     document.getElementById('completed-course-count').textContent = students.filter(s => s.courseCompleted).length;
-    
+
     // إضافة إحصائيات إضافية إن وجدت
     const statsContainer = document.querySelector('.admin-stats');
     if (statsContainer) {
@@ -1107,7 +1109,7 @@ function initEditorUI() {
     // 🔄 زر إضافة الكود المكتوب
     document.getElementById('btn-parse-code').onclick = () => {
         const codeInput = document.getElementById('html-code-input').value.trim();
-        
+
         if (!codeInput) {
             showFeedback('⚠️ الرجاء كتابة بعض الكود أولاً', 'error');
             return;
@@ -1115,7 +1117,7 @@ function initEditorUI() {
 
         // تقسيم الكود إلى أسطر وإزالة الفراغات الزائدة
         const lines = codeInput.split('\n').filter(line => line.trim());
-        
+
         state.builderCode = [];
         lines.forEach(line => {
             line = line.trim();
@@ -1132,7 +1134,7 @@ function initEditorUI() {
     // 🔧 زر تصحيح الأخطاء التلقائي
     document.getElementById('btn-auto-fix').onclick = () => {
         const codeInput = document.getElementById('html-code-input').value;
-        
+
         if (!codeInput.trim()) {
             showFeedback('⚠️ الرجاء كتابة كود لتصحيحه', 'error');
             return;

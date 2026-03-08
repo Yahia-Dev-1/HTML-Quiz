@@ -110,11 +110,7 @@ function initAuth() {
                 state.token = data.token;
                 localStorage.setItem('token', data.token);
                 state.user = data.user;
-                if (data.user.role === 'Admin') {
-                    initAdminDashboard();
-                } else {
-                    renderDashboard();
-                }
+                renderDashboard();
             } else {
                 showAuthError(data.message || 'فشل تسجيل الدخول');
             }

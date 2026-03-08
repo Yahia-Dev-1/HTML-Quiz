@@ -28,7 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('appLang', 'ar');
     }
     if (state.token) {
-        fetchUserProgress();
+        fetchUserProgress().then(() => {
+            if (!state.user) return;
+            const lastScreen = localStorage.getItem('lastScreen');
+            if (lastScreen && lastScreen !== 'auth' && lastScreen !== 'quiz') {
+                showScreen(lastScreen);
+            } else {
+                showScreen('dashboard');
+            }
+        });
     } else {
         showScreen('auth');
     }
@@ -37,8 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Navigation ---
 function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(`screen-${screenId}`).classList.add('active');
-    state.screen = screenId;
+    const screenEl = document.getElementById(`screen-${screenId}`);
+    if (screenEl) {
+        screenEl.classList.add('active');
+        state.screen = screenId;
+        localStorage.setItem('lastScreen', screenId);
+    }
 }
 
 // --- Auth Logic ---
@@ -108,7 +120,8 @@ async function fetchUserProgress() {
         const data = await res.json();
         if (res.ok) {
             state.user = data;
-            renderDashboard();
+            renderDashboard(false); // Only prepare data, don't switch screen yet
+            return data;
         } else {
             console.error('[Auth] Progress fetch failed, clearing session.');
             localStorage.removeItem('token');
@@ -121,12 +134,11 @@ async function fetchUserProgress() {
 }
 
 function renderDashboard() {
-    if (!state.user) return showScreen('auth');
-    console.log('[Dashboard] Rendering for user:', state.user.username, 'Data:', state.user);
-    showScreen('dashboard');
+    if (!state.user) return;
+    console.log('[Dashboard] Rendering for user:', state.user.username);
     document.getElementById('user-display').textContent = state.user.username;
 
-    const adminNavBtn = document.getElementById('admin-nav-btn');
+    const adminNavBtn = document.getElementById('btn-admin-nav');
     if (adminNavBtn) {
         if (state.user.role === 'Admin') {
             adminNavBtn.classList.remove('hidden');

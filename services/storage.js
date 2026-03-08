@@ -94,6 +94,17 @@ const storage = {
         return null;
     },
 
+    deleteOne: async (coll, query) => {
+        if (coll === 'users') {
+            const database = await connectToDatabase();
+            if (query._id && typeof query._id === 'string' && query._id.length === 24) {
+                query._id = new ObjectId(query._id);
+            }
+            return await database.collection('users').deleteOne(query);
+        }
+        return null;
+    },
+
     atomicUpdate: async (coll, query, callback) => {
         if (coll === 'users') {
             const database = await connectToDatabase();

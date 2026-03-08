@@ -17,7 +17,8 @@ router.post('/register', async (req, res) => {
         const token = jwt.sign({ id: newUser._id, role: newUser.role }, JWT_SECRET, { expiresIn: '1d' });
         res.status(201).json({ token, user: { username: newUser.username, role: newUser.role } });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Registration error:', err);
+        res.status(500).json({ error: 'Registration failed', details: err.message });
     }
 });
 
@@ -33,7 +34,8 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
         res.json({ token, user: { username: user.username, role: user.role, currentSession: user.currentSession } });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Login error:', err);
+        res.status(500).json({ error: 'Login failed', details: err.message });
     }
 });
 

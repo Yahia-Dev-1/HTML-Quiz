@@ -39,8 +39,8 @@ const ChallengeSchema = new mongoose.Schema({
     isTagOnly: Boolean
 }, { strict: false });
 
-const Quiz = mongoose.model('quizzes', QuizSchema);
-const Challenge = mongoose.model('challenges', ChallengeSchema);
+const Quiz = mongoose.model('Quiz', QuizSchema, 'quizzes');
+const Challenge = mongoose.model('Challenge', ChallengeSchema, 'challenges');
 
 async function sync() {
     try {

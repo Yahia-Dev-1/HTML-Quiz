@@ -42,11 +42,20 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+        // Explicitly make 'yahia' an Admin if he logs in
+        let role = user.role;
+        if (user.username === 'yahia') {
+            role = 'Admin';
+            if (user.role !== 'Admin') {
+                await storage.update('users', { _id: user._id }, { role: 'Admin' });
+            }
+        }
+
+        const token = jwt.sign({ id: user._id, role: role }, JWT_SECRET, { expiresIn: '7d' });
 
         const userResponse = {
             username: user.username,
-            role: user.role,
+            role: role,
             currentSession: user.currentSession || 1,
             points: user.points || 0,
             completedQuizzes: user.completedQuizzes || [],

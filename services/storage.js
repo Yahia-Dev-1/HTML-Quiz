@@ -1,141 +1,80 @@
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const DATA_DIR = path.join(__dirname, '../data');
+const mongoUri = process.env.MONGO_URI;
 
-// Ensure data directory exists
-try {
-    if (!fs.existsSync(DATA_DIR)) {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-} catch (e) {
-    console.warn('[Storage] Data directory error:', e.message);
-}
+mongoose.connect(mongoUri)
+    .then(() => console.log('✅ Connected to MongoDB Atlas'))
+    .catch(err => console.error('❌ DB Error:', err.message));
 
-const getFilePath = (collection) => path.join(DATA_DIR, `${collection}.json`);
+// Schemas
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, default: 'Student' },
+    currentSession: { type: Number, default: 1 },
+    completedChallenges: { type: Array, default: [] },
+    completedQuizzes: { type: Array, default: [] },
+    quizScores: { type: Object, default: {} },
+    points: { type: Number, default: 0 }
+}, { strict: false });
 
-const readData = (collection) => {
-    const filePath = getFilePath(collection);
-    try {
-        if (!fs.existsSync(filePath)) {
-            return [];
-        }
-        const data = fs.readFileSync(filePath, 'utf8');
-        return JSON.parse(data);
-    } catch (e) {
-        console.error(`Error reading collection ${collection}:`, e.message);
-        return [];
-    }
-};
-
-const writeData = (collection, data) => {
-    try {
-        const filePath = getFilePath(collection);
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-        return true;
-    } catch (e) {
-        console.error(`Error writing collection ${collection}:`, e.message);
-        return false;
-    }
-};
+const User = mongoose.model('User', userSchema);
+const Quiz = mongoose.model('Quiz', new mongoose.Schema({}, { strict: false }), 'quizzes');
+const Challenge = mongoose.model('Challenge', new mongoose.Schema({}, { strict: false }), 'challenges');
 
 const storage = {
-    find: async (collection, query = {}) => {
-        const data = readData(collection);
-        return data.filter(item => {
-            return Object.keys(query).every(key => item[key] == query[key]);
-        });
+    find: async (coll, query) => {
+        if (coll === 'users') return await User.find(query).lean();
+        if (coll === 'quizzes') return await Quiz.find(query).lean();
+        if (coll === 'challenges') return await Challenge.find(query).lean();
+        return [];
     },
 
-    findOne: async (collection, query = {}) => {
-        const data = readData(collection);
-        return data.find(item => {
-            return Object.keys(query).every(key => item[key] == query[key]);
-        });
-    },
-
-    insert: async (collection, item) => {
-        const data = readData(collection);
-        const newItem = {
-            _id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
-            ...item
-        };
-        data.push(newItem);
-        writeData(collection, data);
-        return newItem;
-    },
-
-    update: async (collection, query, updates) => {
-        const data = readData(collection);
-        let updatedCount = 0;
-        const newData = data.map(item => {
-            const matches = Object.keys(query).every(key => item[key] == query[key]);
-            if (matches) {
-                updatedCount++;
-                return { ...item, ...updates };
-            }
-            return item;
-        });
-        writeData(collection, newData);
-        return updatedCount;
-    },
-
-    atomicUpdate: async (collection, query, callback) => {
-        const data = readData(collection);
-        let updatedItem = null;
-        const newData = data.map(item => {
-            const matches = Object.keys(query).every(key => item[key] == query[key]);
-            if (matches) {
-                const result = callback({ ...item });
-                updatedItem = result;
-                return result;
-            }
-            return item;
-        });
-        if (updatedItem) {
-            writeData(collection, newData);
+    findOne: async (coll, query) => {
+        if (coll === 'users') {
+            if (query._id && !mongoose.Types.ObjectId.isValid(query._id)) return null;
+            return await User.findOne(query).lean();
         }
-        return updatedItem;
+        if (coll === 'quizzes') return await Quiz.findOne(query).lean();
+        if (coll === 'challenges') return await Challenge.findOne(query).lean();
+        return null;
     },
 
-    deleteMany: async (collection, query = {}) => {
-        const data = readData(collection);
-        const newData = data.filter(item => {
-            return !Object.keys(query).every(key => item[key] == query[key]);
-        });
-        writeData(collection, newData);
+    insert: async (coll, item) => {
+        if (coll === 'users') return await User.create(item);
+        return null; // Quizzes/Challenges are read-only from sync-db
     },
 
-    findUser: async (username) => {
-        return await storage.findOne('users', { username });
+    atomicUpdate: async (coll, query, callback) => {
+        if (coll === 'users') {
+            const user = await User.findOne(query);
+            if (user) {
+                const updated = callback(user.toObject());
+                delete updated._id; // Prevent ID modification error
+                return await User.findOneAndUpdate(query, updated, { new: true }).lean();
+            }
+        }
+        return null;
     },
+
+    findUser: async (username) => await storage.findOne('users', { username }),
 
     createUser: async (userData) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-        // Let's make the very first user an Admin so Yahia can access it
-        const users = readData('users');
-        const role = users.length === 0 ? 'Admin' : (userData.role || 'Student');
+        const count = await User.countDocuments();
 
         const user = {
             ...userData,
             password: hashedPassword,
-            role: role,
-            currentSession: 1,
-            completedChallenges: [],
-            completedQuizzes: [],
-            quizScores: {},
-            courseCompleted: false,
-            points: 0
+            role: count === 0 ? 'Admin' : 'Student',
+            currentSession: 1
         };
-        return await storage.insert('users', user);
+        return await User.create(user);
     },
 
-    comparePassword: async (candidatePassword, hashedPassword) => {
-        return await bcrypt.compare(candidatePassword, hashedPassword);
-    }
+    comparePassword: async (p, h) => await bcrypt.compare(p, h)
 };
 
 module.exports = storage;

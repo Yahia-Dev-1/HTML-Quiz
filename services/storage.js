@@ -6,16 +6,20 @@ const mongoose = require('mongoose');
 // Connect to MongoDB
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/html-quiz';
 mongoose.connect(mongoUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 }).then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+    .catch(err => console.error('MongoDB connection error:', err));
 
 const DATA_DIR = path.join(__dirname, '../data');
 
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR);
+// Ensure data directory exists (Ignored on read-only systems like Vercel)
+try {
+    if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+} catch (e) {
+    console.warn('[Storage] Data directory is read-only or not writable. This is expected on Vercel.');
 }
 
 const getFilePath = (collection) => path.join(DATA_DIR, `${collection}.json`);
@@ -31,34 +35,38 @@ const readData = (collection) => {
 };
 
 const writeData = (collection, data) => {
-    const filePath = getFilePath(collection);
-    console.log(`[File Write] Writing to ${collection}.json - Records: ${data.length}`);
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    try {
+        const filePath = getFilePath(collection);
+        console.log(`[File Write] Writing to ${collection}.json - Records: ${data.length}`);
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    } catch (e) {
+        console.error(`[File Write Error] Could not write ${collection}.json:`, e.message);
+    }
 };
 
 // Define Mongoose schemas
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  progress: { type: Object, default: {} },
-  createdAt: { type: Date, default: Date.now }
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    progress: { type: Object, default: {} },
+    createdAt: { type: Date, default: Date.now }
 });
 
 const quizSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
-  title: String,
-  questions: Array,
-  timeLimit: Number,
-  passingScore: Number
+    id: { type: String, required: true, unique: true },
+    title: String,
+    questions: Array,
+    timeLimit: Number,
+    passingScore: Number
 });
 
 const challengeSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
-  title: String,
-  description: String,
-  expectedSolution: String,
-  hints: Array,
-  difficulty: String
+    id: { type: String, required: true, unique: true },
+    title: String,
+    description: String,
+    expectedSolution: String,
+    hints: Array,
+    difficulty: String
 });
 
 const User = mongoose.model('User', userSchema);

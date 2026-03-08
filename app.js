@@ -24,6 +24,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initAuth();
     initEditorUI();
+
+    // Back Buttons
+    const backCategory = document.getElementById('btn-back-category');
+    if (backCategory) backCategory.onclick = () => showScreen('dashboard');
+
+    const backQuiz = document.getElementById('btn-back-quiz');
+    if (backQuiz) backQuiz.onclick = () => {
+        if (confirm('هل تريد حقاً إلغاء الاختبار؟')) showScreen('dashboard');
+    };
+
+    const backChallenge = document.getElementById('btn-back-challenge');
+    if (backChallenge) backChallenge.onclick = () => showScreen('category');
+
+    const backAdmin = document.getElementById('btn-back-admin');
+    if (backAdmin) backAdmin.onclick = () => showScreen('dashboard');
+
+    const adminLogout = document.getElementById('btn-admin-logout');
+    if (adminLogout) adminLogout.onclick = () => logout();
+
     if (!localStorage.getItem('appLang')) {
         localStorage.setItem('appLang', 'ar');
     }
@@ -152,12 +171,13 @@ function renderDashboard() {
     }
 
     // Only display pts for students (safeguard)
-    document.getElementById('user-points').textContent = state.user.points || 0;
+    const ptsCount = document.getElementById('user-points');
+    if (ptsCount) ptsCount.textContent = state.user.points || 0;
+
+    const ptsDisplay = document.getElementById('user-points-display');
     if (state.user.role === 'Admin') {
-        const ptsDisplay = document.getElementById('user-points-display');
         if (ptsDisplay) ptsDisplay.style.display = 'none';
     } else {
-        const ptsDisplay = document.getElementById('user-points-display');
         if (ptsDisplay) ptsDisplay.style.display = 'inline-block';
     }
 

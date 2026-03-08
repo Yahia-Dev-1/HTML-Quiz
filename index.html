@@ -107,8 +107,9 @@
     <!-- =========== SCREEN: Category Select =========== -->
     <div id="screen-category" class="screen">
         <div class="container pt-12">
-            <h1 class="hero-title" style="text-align: center; margin-bottom: 3rem;">محتوى الجلسة
-            </h1>
+            <button id="btn-back-category" class="btn btn-ghost" style="margin-bottom: 20px;">⬅️ العودة
+                للرئيسية</button>
+            <h1 class="hero-title" style="text-align: center; margin-bottom: 3rem;">محتوى الجلسة</h1>
             <div id="categories-grid" class="categories-grid"></div>
             <p class="hint-text">اختر قسماً لبدء الاختبار – كل قسم يحتوي على أسئلة متخصصة</p>
         </div>
@@ -117,6 +118,7 @@
     <!-- =========== SCREEN: Quiz =========== -->
     <div id="screen-quiz" class="screen">
         <div class="container pt-12">
+            <button id="btn-back-quiz" class="btn btn-ghost" style="margin-bottom: 20px;">⬅️ إلغاء الاختبار</button>
 
             <!-- Header -->
             <div class="quiz-header">
@@ -330,6 +332,7 @@
     <!-- =========== SCREEN: Challenge (Code Builder) =========== -->
     <div id="screen-challenge" class="screen">
         <div class="container pt-12">
+            <button id="btn-back-challenge" class="btn btn-ghost" style="margin-bottom: 20px;">⬅️ العودة للجلسة</button>
             <!-- Header for overall challenge view -->
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1 class="hero-title">التحدي العملي</h1>
@@ -486,15 +489,14 @@
                         <!-- ✨ محرر النصوص المباشر الجديد -->
                         <div style="margin-top: 2rem; border-top: 2px solid #0ea5e9; padding-top: 1.5rem;">
                             <h4 style="color: #0ea5e9; margin-bottom: 1rem;">✍️ كتابة الكود مباشرة (اختياري)</h4>
-                            <textarea 
-                                id="html-code-input" 
-                                class="code-input-area"
+                            <textarea id="html-code-input" class="code-input-area"
                                 placeholder="أكتب كودك HTML مباشرة هنا...&#10;مثال:&#10;&lt;html&gt;&#10;&lt;body&gt;&#10;&lt;h1&gt;مرحبا&lt;/h1&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;&#10;&#10;ستُصحح الأخطاء تلقائياً ✨"
-                                style="width: 100%; height: 150px; padding: 1rem; border: 2px solid #1e293b; border-radius: 8px; background: #0f172a; color: #0ea5e9; font-family: 'Monaco', 'Courier New', monospace; font-size: 14px; resize: vertical; direction: ltr;"
-                            ></textarea>
+                                style="width: 100%; height: 150px; padding: 1rem; border: 2px solid #1e293b; border-radius: 8px; background: #0f172a; color: #0ea5e9; font-family: 'Monaco', 'Courier New', monospace; font-size: 14px; resize: vertical; direction: ltr;"></textarea>
                             <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
-                                <button id="btn-parse-code" class="btn btn-blue" style="flex: 1;">🔄 إضافة الكود المكتوب</button>
-                                <button id="btn-auto-fix" class="btn btn-premium-alt" style="flex: 1;">🔧 تصحيح الأخطاء</button>
+                                <button id="btn-parse-code" class="btn btn-blue" style="flex: 1;">🔄 إضافة الكود
+                                    المكتوب</button>
+                                <button id="btn-auto-fix" class="btn btn-premium-alt" style="flex: 1;">🔧 تصحيح
+                                    الأخطاء</button>
                             </div>
                         </div>
 

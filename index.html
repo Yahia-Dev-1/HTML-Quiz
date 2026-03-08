@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>اختبار إتقان HTML</title>
+    <meta name="description" content="اختبر معلوماتك في HTML من خلال أسئلة وتحديات تفاعلية" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- =========== SCREEN: Auth (Login/Register) =========== -->
+    <div id="screen-auth" class="screen active">
+        <div class="container pt-12">
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button id="tab-login" class="tab-btn active">تسجيل الدخول</button>
+                    <button id="tab-register" class="tab-btn">إنشاء حساب</button>
+                </div>
+                <form id="auth-form" class="auth-box">
+                    <div class="form-group">
+                        <label for="username">اسم المستخدم</label>
+                        <input type="text" id="username" placeholder="أدخل اسمك هنا" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">كلمة المرور</label>
+                        <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
+                    </div>
+                    <button type="submit" id="btn-auth" class="btn btn-blue">تسجيل الدخول</button>
+                    <p id="auth-error" class="error-text hidden"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========== SCREEN: Dashboard =========== -->
+    <div id="screen-dashboard" class="screen">
+        <div class="dash-nav">
+            <div class="nav-container">
+                <div class="nav-right">
+                    <div class="user-profile">
+                        <div class="user-avatar">👤</div>
+                        <div class="user-details">
+                            <span id="user-display" class="nav-username">المتعلم</span>
+                            <span class="nav-points" id="user-points-display">💰 <span id="user-points">0</span>
+                                نقطة</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-left">
+                    <button id="btn-admin-nav" class="btn btn-ghost hidden">⚙️ لوحة الإدارة</button>
+                    <button id="btn-logout" class="btn btn-logout-nav">🚪 تسجيل الخروج</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container pt-24">
+            <header class="dash-welcome">
+                <h1 class="hero-title">أهلاً بك مجدداً!</h1>
+                <p class="hero-sub">استكمل مسار إتقان لغة الـ HTML</p>
+            </header>
+
+            <!-- Material Section -->
+            <section class="material-section">
+                <div class="material-card">
+                    <div class="material-icon">📚</div>
+                    <div class="material-info">
+                        <h3>المادة العلمية الشاملة</h3>
+                        <p>دليل شامل لتعلم بناء المواقع</p>
+                    </div>
+                    <div class="material-actions" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="Web_Building.pdf" target="_blank" class="btn btn-premium-alt">📖 فتح الكتاب</a>
+                        <button onclick="showScreen('vscode-setup')" class="btn btn-blue">💻 إعداد برنامج البرمجة (VS
+                            Code)</button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="sessions-grid">
+                <!-- Session Cards Generated Dynamically -->
+                <div class="session-card" data-session="1">
+                    <div class="session-info">
+                        <h3>الجلسة 1: أساسيات HTML</h3>
+                        <p>هيكل الصفحة، العناوين، والفقرات</p>
+                    </div>
+                    <div class="session-status">مفتوحة</div>
+                </div>
+                <div class="session-card locked" data-session="2">
+                    <div class="session-info">
+                        <h3>الجلسة 2: الروابط والصور</h3>
+                        <p>إضافة التفاعل والوسائط</p>
+                    </div>
+                    <div class="session-status">🔒 مقفولة</div>
+                </div>
+                <!-- ... More sessions -->
+            </div>
+        </div>
+    </div>
+
+    <!-- =========== SCREEN: Category Select =========== -->
+    <div id="screen-category" class="screen">
+        <div class="container pt-12">
+            <h1 class="hero-title" style="text-align: center; margin-bottom: 3rem;">محتوى الجلسة
+            </h1>
+            <div id="categories-grid" class="categories-grid"></div>
+            <p class="hint-text">اختر قسماً لبدء الاختبار – كل قسم يحتوي على أسئلة متخصصة</p>
+        </div>
+    </div>
+
+    <!-- =========== SCREEN: Quiz =========== -->
+    <div id="screen-quiz" class="screen">
+        <div class="container pt-12">
+
+            <!-- Header -->
+            <div class="quiz-header">
+                <div id="category-badge" class="badge"></div>
+                <h1 class="quiz-title">اختبار HTML</h1>
+            </div>
+
+            <!-- Progress row -->
+            <div class="progress-row">
+                <div class="progress-col">
+                    <div class="progress-labels">
+                        <span class="progress-label-text" id="q-progress-text">السؤال: <span id="q-current"
+                                class="text-blue">1</span> /
+                            <span id="q-total">10</span></span>
+                        <span class="progress-pct" id="progress-pct">10%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-fill" style="width:10%"></div>
+                    </div>
+                </div>
+                <div class="timer-col">
+                    <div id="timer-display" class="timer-number">30</div>
+                    <div class="timer-label">الوقت المتبقي</div>
+                </div>
+            </div>
+
+            <!-- Question card -->
+            <div class="card-wrapper">
+                <div class="quiz-card" id="quiz-card">
+                    <div class="card-accent"></div>
+                    <h2 id="question-text" class="question-text"></h2>
+
+                    <div id="options-grid" class="options-grid"></div>
+
+                    <!-- Explanation -->
+                    <div id="explanation-box" class="explanation-box hidden">
+                        <div class="explanation-inner">
+                            <span class="bulb-icon">💡</span>
+                            <div>
+                                <h3 class="explanation-title">شرح الإجابة</h3>
+                                <p id="explanation-text" class="explanation-body"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="action-row">
+                        <button id="btn-prev" class="btn btn-ghost" disabled>
+                            <svg class="btn-icon-right" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                            <span>السابق</span>
+                        </button>
+                        <button id="btn-confirm" class="btn btn-blue" disabled>تأكيد الإجابة</button>
+                        <button id="btn-next" class="btn btn-indigo hidden">
+                            <span>التالي</span>
+                            <svg class="btn-icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <polyline points="15 18 9 12 15 6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="quiz-footer">
+                <div class="answered-dot-wrap">
+                    <span class="dot-green"></span>
+                    <span class="answered-label" id="answered-count-text">Answered: <span
+                            id="answered-count">0</span></span>
+                </div>
+                <span class="quiz-version">نظام الاختبار الذكي v3.0</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- =========== SCREEN: VSCode Setup Guide =========== -->
+    <div id="screen-vscode-setup" class="screen">
+        <div class="container pt-12 pb-24">
+            <div class="setup-guide-card">
+                <header class="setup-header">
+                    <div class="vscode-logo">🔵</div>
+                    <h1 class="hero-title">دليل تثبيت Visual Studio Code</h1>
+                    <p class="hero-sub">أشهر محرر أكواد لتعلم البرمجة (HTML, CSS, JavaScript)</p>
+                </header>
+
+                <div class="setup-content">
+                    <section class="setup-step">
+                        <div class="step-badge">1</div>
+                        <h3>رابط التحميل المباشر</h3>
+                        <p>ادخل على الموقع الرسمي واضغط زر <strong>Download</strong> لتحميل النسخة المناسبة لجهازك:</p>
+                        <div class="action-box">
+                            <a href="https://code.visualstudio.com/" target="_blank" class="btn btn-blue">🔗 الموقع
+                                الرسمي لـ VS Code</a>
+                        </div>
+                    </section>
+
+                    <section class="setup-step">
+                        <div class="step-badge">2</div>
+                        <h3>خطوات التثبيت (Windows)</h3>
+                        <ul class="check-list">
+                            <li>افتح ملف <code>VSCodeSetup.exe</code> بعد التحميل.</li>
+                            <li>اضغط <strong>Next</strong> ووافق على الشروط (I accept the agreement).</li>
+                            <li><strong>هام جداً:</strong> أثناء التثبيت، تأكد من تفعيل هذه الخيارات:
+                                <ul>
+                                    <li>✅ Add "Open with Code"</li>
+                                    <li>✅ Add to PATH</li>
+                                    <li>✅ Create Desktop Icon</li>
+                                </ul>
+                            </li>
+                            <li>اضغط <strong>Install</strong> ثم <strong>Finish</strong>.</li>
+                        </ul>
+                    </section>
+
+                    <section class="setup-step highlight-step">
+                        <div class="step-badge">3</div>
+                        <h3>إضافة Live Server (ضرورية للمبتدئين)</h3>
+                        <p>هذه الإضافة تسمح لك بتشغيل صفحة HTML مباشرة في المتصفح لرؤية التعديلات فوراً.</p>
+                        <div class="instruction-box">
+                            <ol>
+                                <li>افتح برنامج VS Code.</li>
+                                <li>اضغط على أيقونة <strong>Extensions</strong> (أو <code>Ctrl+Shift+X</code>).</li>
+                                <li>ابحث عن: <code>Live Server</code></li>
+                                <li>اضغط <strong>Install</strong>.</li>
+                            </ol>
+                        </div>
+                    </section>
+
+                    <section class="setup-step">
+                        <div class="step-badge">4</div>
+                        <h3>تشغيل أول ملف HTML</h3>
+                        <div class="code-example">
+                            <p>1. من قائمة File اختر <strong>New File</strong> واحفظه باسم <code>index.html</code></p>
+                            <p>2. اكتب الكود التالي:</p>
+                            <pre dir="ltr"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My First Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello World&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                            <p>3. اضغط كليك يمين داخل الكود واختر <strong>Open with Live Server</strong>.</p>
+                        </div>
+                    </section>
+                    <section class="setup-step">
+                        <div class="step-badge">5</div>
+                        <h3>تثبيت Prettier وتفعيل Auto Save</h3>
+                        <p>لتحسين تنسيق الكود وحفظ التغييرات تلقائيًا:</p>
+                        <ol class="check-list">
+                            <li>افتح نافذة <strong>Extensions</strong> (Ctrl+Shift+X).</li>
+                            <li>ابحث عن <code>Prettier - Code formatter</code> ثم اضغط <strong>Install</strong>.</li>
+                            <li>اذهب إلى <strong>Settings</strong> (Ctrl+,).</li>
+                            <li>فعّل <code>Editor: Format On Save</code> و <code>Files: Auto Save</code> (اختر
+                                "afterDelay" أو "onFocusChange").</li>
+                        </ol>
+                    </section>
+                </div>
+
+                <div class="setup-footer">
+                    <button onclick="showScreen('dashboard')" class="btn btn-ghost">🏠 العودة للوحة التحكم</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========== SCREEN: Results =========== -->
+    <div id="screen-results" class="screen">
+        <div class="container results-center">
+            <div class="results-card">
+                <div class="blob blob-top"></div>
+                <div class="blob blob-bottom"></div>
+
+                <div class="results-inner">
+                    <div class="trophy-wrap"><span class="trophy-icon">🏆</span></div>
+                    <h1 class="results-title" id="results-title-display">اكتمل الاختبار!</h1>
+                    <p class="results-sub" id="results-sub-display">لقد قمت بعمل رائع في إنهاء جميع الأسئلة</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-val" id="stat-time">0:00</div>
+                            <div class="stat-label">الوقت المستغرق</div>
+                        </div>
+                        <div class="stat-box highlight">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-val" id="stat-score">0/10</div>
+                            <div class="stat-label">الدرجة</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-val" id="stat-pct">0%</div>
+                            <div class="stat-label">الدقة المئوية</div>
+                        </div>
+                    </div>
+
+                    <div id="answers-review" class="answers-review"></div>
+
+                    <button id="btn-restart" class="btn btn-restart">
+                        🔄 العودة للرئيسية
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========== SCREEN: Challenge (Code Builder) =========== -->
+    <div id="screen-challenge" class="screen">
+        <div class="container pt-12">
+            <!-- Header for overall challenge view -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 class="hero-title">التحدي العملي</h1>
+            </div>
+            <div class="challenge-layout">
+                <aside class="tag-sidebar">
+                    <div class="sidebar-header">
+                        <h3>مكتبة الوسوم</h3>
+                        <span class="dd-badge">✨ دعم السحب والإفلات متاح</span>
+                    </div>
+                    <div id="tag-library" class="tag-categories-container">
+                        <!-- Category: Boilerplate -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">الهيكل الأساسي</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="!DOCTYPE html">
+                                    DOCTYPE html
+                                </button>
+                                <button class="tag-button btn-premium-alt" draggable="true" data-tag="all">الهيكل
+                                    الأساسي المتكامل</button>
+                                <button class="tag-button" draggable="true" data-tag="html">html</button>
+                                <button class="tag-button" draggable="true" data-tag="head">head</button>
+                                <button class="tag-button" draggable="true" data-tag="body">body</button>
+                            </div>
+                        </div>
+
+                        <!-- Category: Metadata -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">البيانات الوصفية</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="title">title</button>
+                                <button class="tag-button" draggable="true" data-tag="meta">meta</button>
+                                <button class="tag-button" draggable="true" data-tag="link">link</button>
+                                <button class="tag-button" draggable="true" data-tag="style">style</button>
+                                <button class="tag-button" draggable="true" data-tag="script">script</button>
+                            </div>
+                        </div>
+
+                        <!-- Category: Text -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">العناوين والنصوص</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="h1">h1</button>
+                                <button class="tag-button" draggable="true" data-tag="h2">h2</button>
+                                <button class="tag-button" draggable="true" data-tag="h3">h3</button>
+                                <button class="tag-button" draggable="true" data-tag="h4">h4</button>
+                                <button class="tag-button" draggable="true" data-tag="h5">h5</button>
+                                <button class="tag-button" draggable="true" data-tag="h6">h6</button>
+                                <button class="tag-button" draggable="true" data-tag="p">p</button>
+                                <button class="tag-button" draggable="true" data-tag="b">b</button>
+                                <button class="tag-button" draggable="true" data-tag="strong">strong</button>
+                                <button class="tag-button" draggable="true" data-tag="i">i</button>
+                                <button class="tag-button" draggable="true" data-tag="em">em</button>
+                                <button class="tag-button" draggable="true" data-tag="small">small</button>
+                                <button class="tag-button" draggable="true" data-tag="u">u</button>
+                                <button class="tag-button" draggable="true" data-tag="mark">mark</button>
+                                <button class="tag-button" draggable="true" data-tag="sub">sub</button>
+                                <button class="tag-button" draggable="true" data-tag="sup">sup</button>
+                            </div>
+                        </div>
+
+                        <!-- Category: Links & Media -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">الروابط والوسائط</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="a">a</button>
+                                <button class="tag-button" draggable="true" data-tag="img">img</button>
+                                <button class="tag-button" draggable="true" data-tag="audio">audio</button>
+                                <button class="tag-button" draggable="true" data-tag="video">video</button>
+                                <button class="tag-button" draggable="true" data-tag="source">source</button>
+                                <button class="tag-button" draggable="true" data-tag="iframe">iframe</button>
+                            </div>
+                        </div>
+
+                        <!-- Category: Lists -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">القوائم</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="ul">ul</button>
+                                <button class="tag-button" draggable="true" data-tag="ol">ol</button>
+                                <button class="tag-button" draggable="true" data-tag="li">li</button>
+                                <button class="tag-button" draggable="true" data-tag="dl">dl</button>
+                                <button class="tag-button" draggable="true" data-tag="dt">dt</button>
+                                <button class="tag-button" draggable="true" data-tag="dd">dd</button>
+                            </div>
+                        </div>
+
+                        <!-- Category: Tables -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">الجداول</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="table">table</button>
+                                <button class="tag-button" draggable="true" data-tag="tr">tr</button>
+                                <button class="tag-button" draggable="true" data-tag="th">th</button>
+                                <button class="tag-button" draggable="true" data-tag="td">td</button>
+                                <button class="tag-button" draggable="true" data-tag="thead">thead</button>
+                                <button class="tag-button" draggable="true" data-tag="tbody">tbody</button>
+                                <button class="tag-button" draggable="true" data-tag="tfoot">tfoot</button>
+                            </div>
+                        </div>
+
+                        <!-- Category: Forms -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">النماذج (Forms)</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="form">form</button>
+                                <button class="tag-button" draggable="true" data-tag="input">input</button>
+                                <button class="tag-button" draggable="true" data-tag="label">label</button>
+                                <button class="tag-button" draggable="true" data-tag="button">button</button>
+                                <button class="tag-button" draggable="true" data-tag="select">select</button>
+                                <button class="tag-button" draggable="true" data-tag="option">option</button>
+                                <button class="tag-button" draggable="true" data-tag="textarea">textarea</button>
+                            </div>
+                        </div>
+
+                        <!-- Category: Semantic -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">العناصر الدلالية</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="header">header</button>
+                                <button class="tag-button" draggable="true" data-tag="nav">nav</button>
+                                <button class="tag-button" draggable="true" data-tag="main">main</button>
+                                <button class="tag-button" draggable="true" data-tag="section">section</button>
+                                <button class="tag-button" draggable="true" data-tag="article">article</button>
+                                <button class="tag-button" draggable="true" data-tag="aside">aside</button>
+                                <button class="tag-button" draggable="true" data-tag="footer">footer</button>
+                            </div>
+                        </div>
+
+                        <!-- Category: Structural -->
+                        <div class="tag-cat">
+                            <h4 class="tag-header">عناصر عامة</h4>
+                            <div class="tag-grid">
+                                <button class="tag-button" draggable="true" data-tag="div">div</button>
+                                <button class="tag-button" draggable="true" data-tag="span">span</button>
+                                <button class="tag-button" draggable="true" data-tag="br">br</button>
+                                <button class="tag-button" draggable="true" data-tag="hr">hr</button>
+                                <button class="tag-button" draggable="true" data-tag="!-- content --">Comment</button>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                <main class="builder-main">
+                    <div class="challenge-header">
+                        <h2 id="challenge-title">تحدي: إنشاء عنوان</h2>
+                        <p id="challenge-desc">استخدم وسم h1 لكتابة 'مرحباً بكم'</p>
+                        <h4 style="margin-top: 1rem; color: var(--secondary);">📝 Task Requirements</h4>
+                    </div>
+                    <div class="code-editor">
+                        <h3 style="color:#fff; margin-bottom: 1rem;">🛠️ باني الأكواد</h3>
+                        <div id="editor-canvas" class="editor-canvas" placeholder="اسحب الوسوم هنا أو انقر للإضافة...">
+                        </div>
+
+                        <!-- ✨ محرر النصوص المباشر الجديد -->
+                        <div style="margin-top: 2rem; border-top: 2px solid #0ea5e9; padding-top: 1.5rem;">
+                            <h4 style="color: #0ea5e9; margin-bottom: 1rem;">✍️ كتابة الكود مباشرة (اختياري)</h4>
+                            <textarea 
+                                id="html-code-input" 
+                                class="code-input-area"
+                                placeholder="أكتب كودك HTML مباشرة هنا...&#10;مثال:&#10;&lt;html&gt;&#10;&lt;body&gt;&#10;&lt;h1&gt;مرحبا&lt;/h1&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;&#10;&#10;ستُصحح الأخطاء تلقائياً ✨"
+                                style="width: 100%; height: 150px; padding: 1rem; border: 2px solid #1e293b; border-radius: 8px; background: #0f172a; color: #0ea5e9; font-family: 'Monaco', 'Courier New', monospace; font-size: 14px; resize: vertical; direction: ltr;"
+                            ></textarea>
+                            <div style="display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;">
+                                <button id="btn-parse-code" class="btn btn-blue" style="flex: 1;">🔄 إضافة الكود المكتوب</button>
+                                <button id="btn-auto-fix" class="btn btn-premium-alt" style="flex: 1;">🔧 تصحيح الأخطاء</button>
+                            </div>
+                        </div>
+
+                        <div class="editor-actions">
+                            <button id="btn-check-solution" class="btn btn-blue">✅ التحقق من الكود</button>
+                            <button id="btn-show-hint" class="btn btn-show-solution">💡 تلميح (-10 نقاط)</button>
+                            <button id="btn-clear-code" class="btn btn-ghost">إعادة ضبط المحرر</button>
+                        </div>
+                        <div id="challenge-feedback" class="challenge-feedback hidden"></div>
+                    </div>
+                    <div class="live-preview">
+                        <h3>المعاينه المباشرة</h3>
+                        <iframe id="preview-iframe" class="preview-frame"></iframe>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========== SCREEN: Admin Dashboard =========== -->
+    <div id="screen-admin" class="screen">
+        <div class="container pt-12">
+            <h1 class="hero-title">لوحة الإدارة</h1>
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <span id="total-students" class="stat-v">0</span>
+                    <p class="stat-l">الطلاب المسجلين</p>
+                </div>
+                <div class="stat-card">
+                    <span id="completed-course-count" class="stat-v">0</span>
+                    <p class="stat-l">أتموا الدورة</p>
+                </div>
+            </div>
+            <div class="student-list-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>اسم المستخدم</th>
+                            <th>الجلسة</th>
+                            <th>النقاط</th>
+                            <th>التقدم</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-list-body"></tbody>
+                </table>
+            </div>
+            <div style="margin-top:2rem; display: flex; gap: 1rem;">
+                <button id="btn-admin-logout" class="btn btn-logout-nav">تسجيل الخروج</button>
+                <button onclick="showScreen('dashboard')" class="btn btn-ghost">🏠 الرئيسية</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

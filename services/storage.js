@@ -50,7 +50,13 @@ const writeData = (collection, data) => {
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    progress: { type: Object, default: {} },
+    role: { type: String, default: 'Student' },
+    currentSession: { type: Number, default: 1 },
+    completedChallenges: { type: Array, default: [] },
+    completedQuizzes: { type: Array, default: [] },
+    quizScores: { type: Object, default: {} },
+    points: { type: Number, default: 0 },
+    courseCompleted: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 

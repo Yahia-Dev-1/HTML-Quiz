@@ -121,12 +121,12 @@ async function fetchUserProgress() {
 }
 
 function renderDashboard() {
+    if (!state.user) return showScreen('auth');
     console.log('[Dashboard] Rendering for user:', state.user.username, 'Data:', state.user);
     showScreen('dashboard');
     document.getElementById('user-display').textContent = state.user.username;
 
-    // Explicitly hide the Admin Nav button by default
-    const adminNavBtn = document.getElementById('btn-admin-nav');
+    const adminNavBtn = document.getElementById('admin-nav-btn');
     if (adminNavBtn) {
         if (state.user.role === 'Admin') {
             adminNavBtn.classList.remove('hidden');
@@ -141,16 +141,19 @@ function renderDashboard() {
     // Only display pts for students (safeguard)
     document.getElementById('user-points').textContent = state.user.points || 0;
     if (state.user.role === 'Admin') {
-        document.getElementById('user-points-display').style.display = 'none';
+        const ptsDisplay = document.getElementById('user-points-display');
+        if (ptsDisplay) ptsDisplay.style.display = 'none';
     } else {
-        document.getElementById('user-points-display').style.display = 'inline-block';
+        const ptsDisplay = document.getElementById('user-points-display');
+        if (ptsDisplay) ptsDisplay.style.display = 'inline-block';
     }
 
     const grid = document.querySelector('.sessions-grid');
     grid.innerHTML = '';
 
     state.sessions.forEach(session => {
-        const isUnlocked = session.id <= state.user.currentSession;
+        const userCurrentSession = state.user.currentSession || 1;
+        const isUnlocked = session.id <= userCurrentSession;
         const quizId = `q_s${session.id}`;
 
         // تحديات الجلسة الأربعة: s1c1, s1c2, s1c3, s1c4 إلخ
@@ -204,13 +207,13 @@ function renderDashboard() {
             </div>
             <div class="session-status">
                 ${statusHtml}
-                ${!isUnlocked ? `<div class="lock-reason">أكمل الجلسة ${session.id - 1} أولاً</div>` : ''}
+                ${(!isUnlocked && session.id > 1) ? `<div class="lock-reason">أكمل الجلسة ${session.id - 1} أولاً</div>` : ''}
             </div>
         `;
         if (isUnlocked) {
             card.onclick = () => startSession(session.id);
         } else {
-            card.onclick = () => alert(`🔒 عذراً، يجب عليك إكمال الجلسة ${session.id - 1} أولاً.`);
+            card.onclick = () => alert(`🔒 عذراً، يجب عليك إكمال الجلسة ${Math.max(0, session.id - 1)} أولاً.`);
         }
         grid.appendChild(card);
     });

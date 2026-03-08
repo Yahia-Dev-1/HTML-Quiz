@@ -13,9 +13,20 @@ router.post('/register', async (req, res) => {
         if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
         const newUser = await storage.createUser({ username, password, role: role || 'Student' });
-
         const token = jwt.sign({ id: newUser._id, role: newUser.role }, JWT_SECRET, { expiresIn: '1d' });
-        res.status(201).json({ token, user: { username: newUser.username, role: newUser.role } });
+
+        // Return sanitized user object
+        const userResponse = {
+            username: newUser.username,
+            role: newUser.role,
+            currentSession: newUser.currentSession,
+            points: newUser.points,
+            completedQuizzes: newUser.completedQuizzes,
+            completedChallenges: newUser.completedChallenges,
+            quizScores: newUser.quizScores,
+            courseCompleted: newUser.courseCompleted
+        };
+        res.status(201).json({ token, user: userResponse });
     } catch (err) {
         console.error('Registration error:', err);
         res.status(500).json({ error: 'Registration failed', details: err.message });
@@ -32,7 +43,18 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
-        res.json({ token, user: { username: user.username, role: user.role, currentSession: user.currentSession } });
+
+        const userResponse = {
+            username: user.username,
+            role: user.role,
+            currentSession: user.currentSession || 1,
+            points: user.points || 0,
+            completedQuizzes: user.completedQuizzes || [],
+            completedChallenges: user.completedChallenges || [],
+            quizScores: user.quizScores || {},
+            courseCompleted: user.courseCompleted || false
+        };
+        res.json({ token, user: userResponse });
     } catch (err) {
         console.error('Login error:', err);
         res.status(500).json({ error: 'Login failed', details: err.message });

@@ -61,41 +61,64 @@ const userSchema = new mongoose.Schema({
 });
 
 const quizSchema = new mongoose.Schema({
-    id: { type: String, required: true, unique: true },
-    title: String,
-    questions: Array,
-    timeLimit: Number,
-    passingScore: Number
-});
+    sessionNumber: Number,
+    question: String,
+    choices: [String],
+    correctAnswer: String,
+    explanation: String,
+    category: String
+}, { strict: false });
 
 const challengeSchema = new mongoose.Schema({
-    id: { type: String, required: true, unique: true },
+    id: String,
+    challengeId: String,
+    sessionNumber: Number,
     title: String,
     description: String,
+    task: String,
+    hints: [String],
     expectedSolution: String,
-    hints: Array,
     difficulty: String
-});
+}, { strict: false });
 
 const User = mongoose.model('User', userSchema);
-const Quiz = mongoose.model('Quiz', quizSchema);
-const Challenge = mongoose.model('Challenge', challengeSchema);
+const Quiz = mongoose.model('quizzes', quizSchema);
+const Challenge = mongoose.model('challenges', challengeSchema);
 
 const storage = {
     // Generic Find
     find: async (collection, query = {}) => {
-        if (collection === 'users') return await User.find(query).lean();
-        if (collection === 'quizzes') return await Quiz.find(query).lean();
-        if (collection === 'challenges') return await Challenge.find(query).lean();
-        return [];
+        try {
+            if (collection === 'users') {
+                if (query._id && !mongoose.Types.ObjectId.isValid(query._id)) return [];
+                return await User.find(query).lean();
+            }
+            if (collection === 'quizzes') return await Quiz.find(query).lean();
+            if (collection === 'challenges') return await Challenge.find(query).lean();
+            return [];
+        } catch (e) {
+            console.error(`[Storage Find Error] Collection: ${collection}:`, e.message);
+            throw e;
+        }
     },
 
     // Generic Find One
     findOne: async (collection, query = {}) => {
-        if (collection === 'users') return await User.findOne(query).lean();
-        if (collection === 'quizzes') return await Quiz.findOne(query).lean();
-        if (collection === 'challenges') return await Challenge.findOne(query).lean();
-        return null;
+        try {
+            if (collection === 'users') {
+                if (query._id && !mongoose.Types.ObjectId.isValid(query._id)) {
+                    console.warn(`[Storage] Invalid ObjectId for users: ${query._id}`);
+                    return null;
+                }
+                return await User.findOne(query).lean();
+            }
+            if (collection === 'quizzes') return await Quiz.findOne(query).lean();
+            if (collection === 'challenges') return await Challenge.findOne(query).lean();
+            return null;
+        } catch (e) {
+            console.error(`[Storage FindOne Error] Collection: ${collection}:`, e.message);
+            throw e;
+        }
     },
 
     // Generic Insert
@@ -171,9 +194,15 @@ const storage = {
     createUser: async (userData) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+        // Check if this is the first user
+        const userCount = await User.countDocuments();
+        const role = userCount === 0 ? 'Admin' : (userData.role || 'Student');
+
         const user = {
             ...userData,
             password: hashedPassword,
+            role: role,
             currentSession: 1,
             completedChallenges: [],
             completedQuizzes: [],

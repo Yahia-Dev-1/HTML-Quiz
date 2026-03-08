@@ -586,10 +586,15 @@ async function openSpecificChallenge(sessionId, index) {
         const challenges = await res.json();
         const data = challenges[index];
 
-        if (!data || !data.id) {
+        console.log('[Challenge Debug] Loaded data:', data);
+
+        if (!data || (!data.id && !data.challengeId)) {
             alert('لا يوجد تحدي متاح لهذه الجلسة حالياً.');
             return;
         }
+
+        // Standardize the id
+        data.id = data.id || data.challengeId;
 
         state.currentChallenge = data;
         document.getElementById('challenge-title').textContent = data.title;

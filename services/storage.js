@@ -1,88 +1,112 @@
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const path = require('path');
 
 const uri = process.env.MONGO_URI;
+const DATA_DIR = path.join(__dirname, '../data');
+
 let client;
 let db;
 
+// Connect to MongoDB (For Users only)
 async function connectToDatabase() {
     if (db) return db;
-
     if (!client) {
-        client = new MongoClient(uri, {
-            connectTimeoutMS: 10000,
-            socketTimeoutMS: 45000,
-        });
+        client = new MongoClient(uri);
         await client.connect();
-        console.log('✅ Connected to MongoDB Atlas (Native Driver)');
     }
-
-    db = client.db('html-quiz');
+    db = client.db(); // Use DB from URI
     return db;
 }
 
+// Read Local JSON (For Quizzes/Challenges)
+const readLocalData = (collection) => {
+    try {
+        const filePath = path.join(DATA_DIR, `${collection}.json`);
+        if (fs.existsSync(filePath)) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        }
+    } catch (e) {
+        console.error(`Error reading local ${collection}:`, e.message);
+    }
+    return [];
+};
+
 const storage = {
-    find: async (collectionName, query = {}) => {
-        const database = await connectToDatabase();
-        if (query._id && typeof query._id === 'string' && query._id.length === 24) {
-            query._id = new ObjectId(query._id);
-        }
-        return await database.collection(collectionName).find(query).toArray();
-    },
-
-    findOne: async (collectionName, query = {}) => {
-        const database = await connectToDatabase();
-        if (query._id && typeof query._id === 'string' && query._id.length === 24) {
-            query._id = new ObjectId(query._id);
-        }
-        return await database.collection(collectionName).findOne(query);
-    },
-
-    insert: async (collectionName, item) => {
-        const database = await connectToDatabase();
-        const result = await database.collection(collectionName).insertOne(item);
-        return { ...item, _id: result.insertedId };
-    },
-
-    update: async (collectionName, query, updates) => {
-        const database = await connectToDatabase();
-        if (query._id && typeof query._id === 'string' && query._id.length === 24) {
-            query._id = new ObjectId(query._id);
-        }
-        const result = await database.collection(collectionName).updateMany(query, { $set: updates });
-        return result.modifiedCount;
-    },
-
-    atomicUpdate: async (collectionName, query, callback) => {
-        const database = await connectToDatabase();
-        if (query._id && typeof query._id === 'string' && query._id.length === 24) {
-            query._id = new ObjectId(query._id);
+    find: async (coll, query = {}) => {
+        // Users from Cloud
+        if (coll === 'users') {
+            const database = await connectToDatabase();
+            if (query._id && typeof query._id === 'string' && query._id.length === 24) {
+                query._id = new ObjectId(query._id);
+            }
+            return await database.collection('users').find(query).toArray();
         }
 
-        const item = await database.collection(collectionName).findOne(query);
-        if (item) {
-            const updated = callback({ ...item });
-            delete updated._id; // Prevent immutable field error
-            const result = await database.collection(collectionName).findOneAndUpdate(
-                { _id: item._id },
-                { $set: updated },
-                { returnDocument: 'after' }
-            );
-            return result;
+        // Quizzes/Challenges from Local Files (ALWAYS WORKS)
+        const data = readLocalData(coll);
+        return data.filter(item => {
+            return Object.keys(query).every(key => {
+                if (key === '$or') { // Basic support for the or query
+                    return query[key].some(subQuery =>
+                        Object.keys(subQuery).every(subKey => item[subKey] == subQuery[subKey])
+                    );
+                }
+                return item[key] == query[key];
+            });
+        });
+    },
+
+    findOne: async (coll, query = {}) => {
+        if (coll === 'users') {
+            const database = await connectToDatabase();
+            if (query._id && typeof query._id === 'string' && query._id.length === 24) {
+                query._id = new ObjectId(query._id);
+            }
+            return await database.collection('users').findOne(query);
+        }
+        const data = readLocalData(coll);
+        return data.find(item => Object.keys(query).every(key => item[key] == query[key]));
+    },
+
+    insert: async (coll, item) => {
+        if (coll === 'users') {
+            const database = await connectToDatabase();
+            const result = await database.collection('users').insertOne(item);
+            return { ...item, _id: result.insertedId };
+        }
+        return item;
+    },
+
+    atomicUpdate: async (coll, query, callback) => {
+        if (coll === 'users') {
+            const database = await connectToDatabase();
+            if (query._id && typeof query._id === 'string' && query._id.length === 24) {
+                query._id = new ObjectId(query._id);
+            }
+            const user = await database.collection('users').findOne(query);
+            if (user) {
+                const updated = callback({ ...user });
+                const userId = user._id;
+                delete updated._id;
+                const result = await database.collection('users').findOneAndUpdate(
+                    { _id: userId },
+                    { $set: updated },
+                    { returnDocument: 'after' }
+                );
+                return result;
+            }
         }
         return null;
     },
 
-    findUser: async (username) => {
-        return await storage.findOne('users', { username });
-    },
+    findUser: async (username) => await storage.findOne('users', { username }),
 
     createUser: async (userData) => {
         const database = await connectToDatabase();
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-        // Count users to decide role
         const userCount = await database.collection('users').countDocuments();
 
         const user = {
@@ -93,17 +117,13 @@ const storage = {
             completedChallenges: [],
             completedQuizzes: [],
             quizScores: {},
-            courseCompleted: false,
             points: 0,
             createdAt: new Date()
         };
-
         return await storage.insert('users', user);
     },
 
-    comparePassword: async (candidatePassword, hashedPassword) => {
-        return await bcrypt.compare(candidatePassword, hashedPassword);
-    }
+    comparePassword: async (p, h) => await bcrypt.compare(p, h)
 };
 
 module.exports = storage;
